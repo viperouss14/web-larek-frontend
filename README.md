@@ -196,20 +196,20 @@ interface IEvents {
 ## Слой Presenter
 
 ### class EventEmitter
-Базовый класс, Брокер событий "наблюдатель", позволяет подписываться на события и реагировать на эти события.
+Базовый класс, брокер событий "наблюдатель", позволяет подписываться на события и реагировать на эти события.
 
-Доступные методы:
-`on<T extends object>(eventName: EventName, callback: (event: T) => void)` - Установить обработчик на событие;<br>
-`off(eventName: EventName, callback: Subscriber)` - Снять обработчик с события;<br>
-`emit<T extends object>(eventName: string, data?: T)` - Инициировать событие с данными;<br>
-`onAll(callback: (event: EmitterEvent) => void)` - Слушать все события;<br>
+Доступные методы:<br>
+`on<T extends object>(eventName: EventName, callback: (event: T) => void)` - установить обработчик на событие;<br>
+`off(eventName: EventName, callback: Subscriber)` - снять обработчик с события;<br>
+`emit<T extends object>(eventName: string, data?: T)` - инициировать событие с данными;<br>
+`onAll(callback: (event: EmitterEvent) => void)` - слушать все события;<br>
 `offAll()` - Сбросить все обработчики;<br>
-`trigger<T extends object>(eventName: string, context?: Partial<T>)` - Сделать коллбек триггер, генерирующий событие при вызове.
+`trigger<T extends object>(eventName: string, context?: Partial<T>)` - сделать коллбек триггер, генерирующий событие при вызове.
 
 ### class Api
 Базовый класс для работы с Api.
 
-Доступные методы:
+Доступные методы:<br>
 `handleResponse(response: Response): Promise<object>` - обработчик ответа сервера;<br>
 `get(uri: string)` - гет-запрос для получения данных с сервера;<br>
 `post(uri: string, data: object, method: ApiPostMethods = 'POST')` - пост-запрос для отправки данных на сервер.
@@ -217,7 +217,7 @@ interface IEvents {
 ### class ShopAPI
 Для работы с Api магазина. Наследуется от базового класса Api.
 
-Доступные методы:
+Доступные методы:<br>
 `getProductItem(id: string): Promise<IProduct>` - получение данных о товаре по id;<br>
 `getProductsList(): Promise<IProduct[]>` - получение всего каталога товаров;<br>
 `orderProducts(order: IOrder): Promise<IOrderResult>` - отправка оформленного заказа.
@@ -227,13 +227,13 @@ interface IEvents {
 ### абстрактный class Model
 Базовый класс для создания моделей.
 
-Доступные методы:
+Доступные методы:<br>
 `emitChanges(event: string, payload?: object)` - сообщить всем, что модель поменялась.
 
 ### class AppState
 Класс представляет собой модель состояния приложения.
 
-Доступные методы:
+Доступные методы:<br>
 `setCatalog(items: IProduct[])` - отвечает за установку каталога продуктов;<br>
 `validateOrder()` - отвечает за проверку валидности формы заказа;<br>
 `validateFormContacts()` - отвечает за проверку валидности формы контактов;<br>
@@ -244,7 +244,7 @@ interface IEvents {
 ### абстрактный class Component
 Служит основой для всех компонентов в проекте и предоставляет основные методы для работы с DOM.
 
-Доступные методы:
+Доступные методы:<br>
 `setText(element: HTMLElement, value: unknown)` - Установить текстовое содержимое;<br>
 `setImage(element: HTMLImageElement, src: string, alt?: string)` - изображение с алтернативным текстом;<br>
 `setDisabled(element: HTMLElement, state: boolean)` - меняет статус блокировки;<br>
@@ -253,7 +253,7 @@ interface IEvents {
 ### class Page
 Отвечает за отображение первоначальной страницы, каталога товаров и счетчика корзины.
 
-Доступные методы:
+Доступные методы:<br>
 `set counter(value: number)` - устанавливает счетчик корзины;<br>
 `set catalog(items: HTMLElement[])` - определяет каталог товаров;<br>
 `set locked(value: boolean)` - блокирует страницу, если открыто модальное окно.
@@ -261,7 +261,7 @@ interface IEvents {
 ### class Card
 Отвечает за отображение карточки товара.
 
-Доступные методы:
+Доступные методы:<br>
 `set id(value: string)` - устанавливает id товара;<br>
 `set title(value: string)` - устанавливает название товара;<br>
 `set image(value: string)` - устанавливает картинку товара;<br>
@@ -273,7 +273,7 @@ interface IEvents {
 ### class Modal
 Отвечает за работу с модальными окнами.
 
-Доступные методы:
+Доступные методы:<br>
 `set content(value: HTMLElement)` - устанавливает контент в модальное окно;<br>
 `open()` - открытие модального окна;<br>
 `close()` - закрытие модального окна;<br>
@@ -282,7 +282,7 @@ interface IEvents {
 ### class Basket
 Отвечает за работу с корзиной.
 
-Доступные методы:
+Доступные методы:<br>
 `set items(items: HTMLElement[])` - устанавливает товары в корзину;<br>
 `get total(): string` - получает итоговую цену;<br>
 `set total(total: number)` - устанавливает итоговую цену;<br>
@@ -295,7 +295,7 @@ interface IEvents {
 ### class ProductInBasket
 Отвечает за отображение товара в корзине.
 
-Доступные методы:
+Доступные методы:<br>
 `set index(value: string)` - устанавливает порядковый номер товара в корзине;<br>
 `set id(value: string)` - устанавливает id товара;<br>
 `set title(value: string)` - устанавливает название товара;<br>
@@ -304,7 +304,7 @@ interface IEvents {
 ### class Form
 Для работы с формой заказа.
 
-Доступные методы:
+Доступные методы:<br>
 `onInputChange(field: keyof T, value: string)` - обработка изменений ввода пользователем;<br>
 `handlePaymentChange(value: string)` - обработка изменения способа оплаты;<br>
 `set valid(value: boolean)` - управляет доступностью кнопки в зависимости от валидности данных в форме;<br>
@@ -315,20 +315,20 @@ interface IEvents {
 ### class Order
 Для работы с формой заказа, в которой выбирается способ оплаты и указывается адрес.
 
-Доступные методы:
+Доступные методы:<br>
 `handleButtonClick(clickedButton: HTMLButtonElement)` - устанавливает значение способа оплаты;<br>
 `set address(value: string)` - устанавливает значение адреса доставки.
 
 ### class Contacts
 Для работы с формой заказа, в которой указываеются эл. почта и телефон.
 
-Доступные методы:
+Доступные методы:<br>
 `set email(value: string)` - устанавливает значение почты пользователя;<br>
 `set phone(value: string)` - устанавливает значение номера телефона пользователя.
 
 ### class Success
 Для вывода сообщения об успешном оформлении заказа.
 
-Доступные методы:
+Доступные методы:<br>
 `get total(): string` - получить итоговую стоимость;<br>
 `set total(value: string)` - установить итоговую стоимость.
