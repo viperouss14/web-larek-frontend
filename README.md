@@ -199,27 +199,27 @@ interface IEvents {
 Базовый класс, Брокер событий "наблюдатель", позволяет подписываться на события и реагировать на эти события.
 
 Доступные методы:
-`on<T extends object>(eventName: EventName, callback: (event: T) => void)` - Установить обработчик на событие;
-`off(eventName: EventName, callback: Subscriber)` - Снять обработчик с события;
-`emit<T extends object>(eventName: string, data?: T)` - Инициировать событие с данными;
-`onAll(callback: (event: EmitterEvent) => void)` - Слушать все события;
-`offAll()` - Сбросить все обработчики;
+`on<T extends object>(eventName: EventName, callback: (event: T) => void)` - Установить обработчик на событие;<br>
+`off(eventName: EventName, callback: Subscriber)` - Снять обработчик с события;<br>
+`emit<T extends object>(eventName: string, data?: T)` - Инициировать событие с данными;<br>
+`onAll(callback: (event: EmitterEvent) => void)` - Слушать все события;<br>
+`offAll()` - Сбросить все обработчики;<br>
 `trigger<T extends object>(eventName: string, context?: Partial<T>)` - Сделать коллбек триггер, генерирующий событие при вызове.
 
 ### class Api
 Базовый класс для работы с Api.
 
 Доступные методы:
-`handleResponse(response: Response): Promise<object>` - обработчик ответа сервера;
-`get(uri: string)` - гет-запрос для получения данных с сервера;
+`handleResponse(response: Response): Promise<object>` - обработчик ответа сервера;<br>
+`get(uri: string)` - гет-запрос для получения данных с сервера;<br>
 `post(uri: string, data: object, method: ApiPostMethods = 'POST')` - пост-запрос для отправки данных на сервер.
 
 ### class ShopAPI
 Для работы с Api магазина. Наследуется от базового класса Api.
 
 Доступные методы:
-`getProductItem(id: string): Promise<IProduct>` - получение данных о товаре по id;
-`getProductsList(): Promise<IProduct[]>` - получение всего каталога товаров;
+`getProductItem(id: string): Promise<IProduct>` - получение данных о товаре по id;<br>
+`getProductsList(): Promise<IProduct[]>` - получение всего каталога товаров;<br>
 `orderProducts(order: IOrder): Promise<IOrderResult>` - отправка оформленного заказа.
 
 ## Слой Model
@@ -234,10 +234,10 @@ interface IEvents {
 Класс представляет собой модель состояния приложения.
 
 Доступные методы:
-`setCatalog(items: IProduct[])` - отвечает за установку каталога продуктов;
-`validateOrder()` - отвечает за проверку валидности формы заказа;
-`validateFormContacts()` - отвечает за проверку валидности формы контактов;
-`setOrderField(field: keyof IOrderForm, value: string)` - отвечает за установку значения поля заказа в объекте order на основе переданных аргументов;
+`setCatalog(items: IProduct[])` - отвечает за установку каталога продуктов;<br>
+`validateOrder()` - отвечает за проверку валидности формы заказа;<br>
+`validateFormContacts()` - отвечает за проверку валидности формы контактов;<br>
+`setOrderField(field: keyof IOrderForm, value: string)` - отвечает за установку значения поля заказа в объекте order на основе переданных аргументов.
 
 ## Слой View
 
@@ -245,70 +245,70 @@ interface IEvents {
 Служит основой для всех компонентов в проекте и предоставляет основные методы для работы с DOM.
 
 Доступные методы:
-`setText(element: HTMLElement, value: unknown)` - Установить текстовое содержимое;
-`setImage(element: HTMLImageElement, src: string, alt?: string)` - изображение с алтернативным текстом;
-`setDisabled(element: HTMLElement, state: boolean)` - меняет статус блокировки;
+`setText(element: HTMLElement, value: unknown)` - Установить текстовое содержимое;<br>
+`setImage(element: HTMLImageElement, src: string, alt?: string)` - изображение с алтернативным текстом;<br>
+`setDisabled(element: HTMLElement, state: boolean)` - меняет статус блокировки;<br>
 `render(data?: Partial<T>): HTMLElement` - вернуть корневой DOM-элемент.
 
 ### class Page
 Отвечает за отображение первоначальной страницы, каталога товаров и счетчика корзины.
 
 Доступные методы:
-`set counter(value: number)` - устанавливает счетчик корзины;
-`set catalog(items: HTMLElement[])` - определяет каталог товаров;
+`set counter(value: number)` - устанавливает счетчик корзины;<br>
+`set catalog(items: HTMLElement[])` - определяет каталог товаров;<br>
 `set locked(value: boolean)` - блокирует страницу, если открыто модальное окно.
 
 ### class Card
 Отвечает за отображение карточки товара.
 
 Доступные методы:
-`set id(value: string)` - устанавливает id товара;
-`set title(value: string)` - устанавливает название товара;
-`set image(value: string)` - устанавливает картинку товара;
-`set price(value: string | null)` - устанавливает цену товара;
-`set category(value: string)` - устанавливает категорию товара;
-`set description(value: string)` - устанавливает описание товара;
+`set id(value: string)` - устанавливает id товара;<br>
+`set title(value: string)` - устанавливает название товара;<br>
+`set image(value: string)` - устанавливает картинку товара;<br>
+`set price(value: string | null)` - устанавливает цену товара;<br>
+`set category(value: string)` - устанавливает категорию товара;<br>
+`set description(value: string)` - устанавливает описание товара;<br>
 `disableButton()` - отключает кнопку добавления товара в корзину.
 
 ### class Modal
 Отвечает за работу с модальными окнами.
 
 Доступные методы:
-`set content(value: HTMLElement)` - устанавливает контент в модальное окно;
-`open()` - открытие модального окна;
-`close()` - закрытие модального окна;
+`set content(value: HTMLElement)` - устанавливает контент в модальное окно;<br>
+`open()` - открытие модального окна;<br>
+`close()` - закрытие модального окна;<br>
 `render(data: IModalData): HTMLElement` - рендер модального окна.
 
 ### class Basket
 Отвечает за работу с корзиной.
 
 Доступные методы:
-`set items(items: HTMLElement[])` - устанавливает товары в корзину;
-`get total(): string` - получает итоговую цену;
-`set total(total: number)` - устанавливает итоговую цену;
-`updateButtonState()` - обновляет состояния кнопки;
-`getBasketItems()` - получает количество элементов в корзине;
-`removeItem()` - удаляет товар из корзины;
-`removeAllItem()` - удаляет все товары из корзины;
+`set items(items: HTMLElement[])` - устанавливает товары в корзину;<br>
+`get total(): string` - получает итоговую цену;<br>
+`set total(total: number)` - устанавливает итоговую цену;<br>
+`updateButtonState()` - обновляет состояния кнопки;<br>
+`getBasketItems()` - получает количество элементов в корзине;<br>
+`removeItem()` - удаляет товар из корзины;<br>
+`removeAllItem()` - удаляет все товары из корзины;<br>
 `render(data: Partial<IBasketView>): HTMLElement` - отрисовка корзины.
 
 ### class ProductInBasket
 Отвечает за отображение товара в корзине.
 
 Доступные методы:
-`set index(value: string)` - устанавливает порядковый номер товара в корзине;
-`set id(value: string)` - устанавливает id товара;
-`set title(value: string)` - устанавливает название товара;
+`set index(value: string)` - устанавливает порядковый номер товара в корзине;<br>
+`set id(value: string)` - устанавливает id товара;<br>
+`set title(value: string)` - устанавливает название товара;<br>
 `set price(value: number)` - устанавливает цену товара.
 
 ### class Form
 Для работы с формой заказа.
 
 Доступные методы:
-`onInputChange(field: keyof T, value: string)` - обработка изменений ввода пользователем;
-`handlePaymentChange(value: string)` - обработка изменения способа оплаты;
-`set valid(value: boolean)` - управляет доступностью кнопки в зависимости от валидности данных в форме;
-`set errors(value: string)` - устанавливает ошибки;
+`onInputChange(field: keyof T, value: string)` - обработка изменений ввода пользователем;<br>
+`handlePaymentChange(value: string)` - обработка изменения способа оплаты;<br>
+`set valid(value: boolean)` - управляет доступностью кнопки в зависимости от валидности данных в форме;<br>
+`set errors(value: string)` - устанавливает ошибки;<br>
 `render(state: Partial<T> & IFormState)` - отрисовывает внешний вид формы в соответствии с переданным состоянием.
 
 
@@ -316,19 +316,19 @@ interface IEvents {
 Для работы с формой заказа, в которой выбирается способ оплаты и указывается адрес.
 
 Доступные методы:
-`handleButtonClick(clickedButton: HTMLButtonElement)` - устанавливает значение способа оплаты;
+`handleButtonClick(clickedButton: HTMLButtonElement)` - устанавливает значение способа оплаты;<br>
 `set address(value: string)` - устанавливает значение адреса доставки.
 
 ### class Contacts
 Для работы с формой заказа, в которой указываеются эл. почта и телефон.
 
 Доступные методы:
-`set email(value: string)` - устанавливает значение почты пользователя;
+`set email(value: string)` - устанавливает значение почты пользователя;<br>
 `set phone(value: string)` - устанавливает значение номера телефона пользователя.
 
 ### class Success
 Для вывода сообщения об успешном оформлении заказа.
 
 Доступные методы:
-`get total(): string` - получить итоговую стоимость;
+`get total(): string` - получить итоговую стоимость;<br>
 `set total(value: string)` - установить итоговую стоимость.
