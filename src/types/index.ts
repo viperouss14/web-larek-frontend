@@ -7,7 +7,10 @@ export interface IProduct {
   price: number | null;
 }
 
-export type PaymentMethod = 'online' | 'offline';
+export enum PaymentMethod {
+  Online = 'online',
+  Offline = 'offline'
+}
 
 export interface IOrderForm {
   payment: PaymentMethod;

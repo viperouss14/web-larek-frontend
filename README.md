@@ -57,7 +57,13 @@ interface ICard {
   price: number | null;
 }
 ```
-`type PaymentMethod = 'online' | 'offline'` - тип способа оплаты.
+Перечисление для описания методов оплаты:
+```
+enum PaymentMethod {
+  Online = 'online',
+  Offline = 'offline'
+}
+```
 
 ### Интерфейс IOrderForm
 Описывает все данные формы заказа:
