@@ -1,22 +1,23 @@
 export interface IProduct {
-  id: string;
-  description?: string;
-  image: string;
-  title: string;
-  category: string;
-  price: number | null;
+	id: string;
+	description: string;
+	image: string;
+	title: string;
+	category: string;
+	price: number;
+	error?: string;
 }
 
-export enum PaymentMethod {
-  Online = 'online',
-  Offline = 'offline'
+export enum PaymentMethods {
+  Online = 'card',
+  Offline = 'cash'
 }
 
 export interface IOrderForm {
-  payment: PaymentMethod;
-  address: string;
-  email: string;
-  phone: string;
+	email: string;
+	phone: string;
+	address: string;
+	payment: PaymentMethods;
 }
 
 export interface IOrder extends IOrderForm {
@@ -24,20 +25,16 @@ export interface IOrder extends IOrderForm {
 	total: number;
 }
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
-
 export interface IOrderResult {
 	id: string;
 	total: number;
 }
 
-export interface IAppState {
-  catalog: IProduct[];
-  basket: string;
-  order: IOrder | null;
-  loading: boolean;
-  total: number | null;
-}
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
-// ??нужен
-export type IBasketItem = Pick<IProduct, 'id' | 'title' | 'price'>;
+export interface IAppState {
+	catalog: IProduct;
+	basket: string[];
+	preview: string | null;
+	order: IOrder | null;
+}

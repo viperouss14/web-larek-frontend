@@ -1,7 +1,5 @@
 import {IEvents} from "./events";
 
-
-// ?? Вроде должен подойти из проекта оно тебе надо без изменений
 // Гарда для проверки на модель
 export const isModel = (obj: unknown): obj is Model<any> => {
     return obj instanceof Model;
@@ -15,9 +13,11 @@ export abstract class Model<T> {
         Object.assign(this, data);
     }
 
-    // Сообщить всем, что модель поменялась
+    // Сообщить всем что модель поменялась
     emitChanges(event: string, payload?: object) {
         // Состав данных можно модифицировать
         this.events.emit(event, payload ?? {});
     }
+
+    // далее можно добавить общие методы для моделей
 }
