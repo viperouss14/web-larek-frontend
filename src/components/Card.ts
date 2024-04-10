@@ -28,7 +28,7 @@ export class Card<T> extends Component<ICard<T>> {
 		super(container);
 
 		this._title = ensureElement<HTMLElement>('.card__title', container);
-		this._image = ensureElement<HTMLImageElement>(`.card__image`,	container);
+		this._image = ensureElement<HTMLImageElement>('.card__image',	container);
 		this._button = container.querySelector('.card__button');
 		this._description = container.querySelector('.card__description');
 		this._category = ensureElement<HTMLElement>('.card__category', container);

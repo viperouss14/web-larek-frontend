@@ -1,6 +1,7 @@
 import { Form } from "./common/Form";
 import { IOrderForm } from "../types/index";
 import { IEvents } from "./base/events";
+import { ensureElement } from "../utils/utils";
 
 export class Contacts extends Form<IOrderForm> {
     protected _email: string = '';
@@ -8,8 +9,8 @@ export class Contacts extends Form<IOrderForm> {
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
 
-        const phoneInput = this.container.querySelector('input[name="phone"]') as HTMLInputElement;
-        const emailInput = this.container.querySelector('input[name="email"]') as HTMLInputElement;
+        const phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', container);
+        const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', container);
 
         phoneInput.addEventListener('input', () => {
             this._phone = phoneInput.value.trim();
@@ -21,16 +22,16 @@ export class Contacts extends Form<IOrderForm> {
             this.checkSubmitButtonState();
         });
 
-        const submitButton = this.container.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', container);
         submitButton.addEventListener('click', () => {
             events.emit('payment:submit');
         });
     }
 
     checkSubmitButtonState() {
-        const phoneInput = this.container.querySelector('input[name="phone"]') as HTMLInputElement;
-        const emailInput = this.container.querySelector('input[name="email"]') as HTMLInputElement;
-        const submitButton = this.container.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
+        const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
+        const submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
 
         const phonePattern = /^\+?\d{1,3}?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2}$/;
         const isPhoneValid = phonePattern.test(phoneInput.value.trim());

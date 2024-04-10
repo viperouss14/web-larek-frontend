@@ -25,9 +25,8 @@ const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
-const successTemplate = ensureElement<HTMLTemplateElement>('#success');
-const cardBasketModal = ensureElement<HTMLTemplateElement>('#card-basket');
 const contactTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 // Модель данных приложения
 const appData = new AppState({}, events);
@@ -87,7 +86,6 @@ events.on('card:select', (item: ProductItem) => {
 	addToBasketButton.addEventListener('click', () => {
 		if (!isItemInBasket) {
 			basket.addItemToBasket(item);
-			localStorage.setItem('basketItems',	JSON.stringify(basket.getItemsInBasket()));
 			modal.close();
 			page.counter = basket.getItemsInBasket().length;
 		}
@@ -96,17 +94,16 @@ events.on('card:select', (item: ProductItem) => {
 
 // Изменилось состояние валидации формы
 events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
-	const { email, phone, address } = errors;
-	order.valid = !email && !phone && !address;
-	order.errors = Object.values({ phone, email, address })
+	const { email, phone, address, payment } = errors;
+	order.valid = !email && !phone && !address && !payment;
+	order.errors = Object.values({ phone, email, address, payment })
 		.filter((i) => !!i)
 		.join('; ');
 });
 
 // Изменилось одно из полей
 events.on(
-	/^order\.(payment|address):change/,
-	(data: { field: keyof IOrderForm; value: PaymentMethods }) => {
+	/^order\..*:change/,	(data: { field: keyof IOrderForm; value: PaymentMethods }) => {
 		appData.setOrderField(data.field, data.value);
 	}
 );
@@ -179,6 +176,7 @@ events.on('payment:submit', () => {
 				content: success.render({}),
 			});
 			basket.clearBasket();
+      appData.order.address = '';
 		})
 		.catch((err) => {
 			console.log(err);

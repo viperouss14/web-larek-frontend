@@ -1,5 +1,5 @@
 import { Component } from '../base/Component';
-import { createElement } from '../../utils/utils';
+import { cloneTemplate, ensureElement } from '../../utils/utils';
 import { EventEmitter } from '../base/events';
 import { ProductItem } from '../AppData';
 
@@ -48,7 +48,6 @@ export class Basket extends Component<IBasketView> {
 		this.itemsInBasket.push(item);
 		this.renderBasketItems();
 		this.updateTotal();
-		localStorage.setItem('basketItems', JSON.stringify(this.itemsInBasket));
 		this.updateCounter();
 	}
 
@@ -56,7 +55,6 @@ export class Basket extends Component<IBasketView> {
 		this.itemsInBasket = this.itemsInBasket.filter((i) => i !== item);
 		this.renderBasketItems();
 		this.updateTotal();
-		localStorage.setItem('basketItems', JSON.stringify(this.itemsInBasket));
 		this.updateCounter();
 	}
 	updateTotal() {
@@ -70,22 +68,16 @@ export class Basket extends Component<IBasketView> {
 		let counter = 1;
 		this._list.innerHTML = '';
 		this.itemsInBasket.forEach((item) => {
-			const newItem = createElement<HTMLLIElement>('li', {
-				className: 'basket__item card card_compact',
-			});
-			newItem.innerHTML = `
-				<span class="basket__item-index">${counter}</span>
-                <span class="card__title">${item.title}</span>
-                <span class="card__price">${item.price} синапсов</span>
-                <button class="basket__item-delete card__button" aria-label="удалить"></button>
-            `;
-			counter += 1;
-			newItem
-				.querySelector('.basket__item-delete')
-				?.addEventListener('click', () => {
-					this.removeItemFromBasket(item);
-				});
-			this._list.appendChild(newItem);
+      const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+			const newItemInBasket = cloneTemplate(cardBasketTemplate);
+      newItemInBasket.querySelector('.basket__item-index').textContent = `${counter}`;
+      newItemInBasket.querySelector('.card__title').textContent = item.title;
+      newItemInBasket.querySelector('.card__price').textContent = `${item.price} синапсов`;
+      newItemInBasket.querySelector('.basket__item-delete').addEventListener('click', () => {
+        this.removeItemFromBasket(item);
+      });
+      this._list.appendChild(newItemInBasket);
+      counter += 1;
 		});
 	}
 
@@ -108,7 +100,6 @@ export class Basket extends Component<IBasketView> {
 		this.itemsInBasket = [];
 		this.renderBasketItems();
 		this.updateTotal();
-		localStorage.removeItem('basketItems');
 		this.updateCounter();
 	}
 
