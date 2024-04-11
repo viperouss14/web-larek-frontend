@@ -43,8 +43,11 @@ export class Contacts extends Form<IOrderForm> {
         if (isPhoneValid && isEmailValid) {
             formErrors.textContent = ''
             submitButton.disabled = false;
-        } else {
-            formErrors.textContent = 'Введите почту и номер телефона в заданном формате'
+        } else if (!isPhoneValid) {
+            formErrors.textContent = 'Введите номер телефона'
+            submitButton.disabled = true;
+        } else if (!isEmailValid) {
+            formErrors.textContent = 'Введите адрес электронной почты'
             submitButton.disabled = true;
         }
     }
