@@ -57,6 +57,7 @@ export class Basket extends Component<IBasketView> {
 		this.updateTotal();
 		this.updateCounter();
 	}
+  
 	updateTotal() {
 		let total = 0;
 		this.itemsInBasket.forEach((item) => total += item.price);
