@@ -1,9 +1,9 @@
-import { AppState, CatalogChangeEvent,	ProductItem } from './components/AppData';
-import { CatalogItem } from './components/Card';
+import { AppState } from './components/AppData';
+import { Card } from './components/Card';
 import { Order } from './components/Order';
 import { Page } from './components/Page';
 import { ShopAPI } from './components/ShopAPI';
-import { IOrderForm, PaymentMethods } from './types/index';
+import { IOrderForm, IProduct, PaymentMethods } from './types/index';
 import { EventEmitter } from './components/base/events';
 import { Success } from './components/common/Success';
 import { Basket } from './components/common/Basket';
@@ -25,7 +25,7 @@ const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
-const contactTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 // Модель данных приложения
@@ -34,12 +34,12 @@ const appData = new AppState({}, events);
 // Переиспользуемые части интерфейса
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
-const contact = new Contacts(cloneTemplate(contactTemplate), events);
+const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 
 // Отрисовка карточек на странице
-events.on<CatalogChangeEvent>('items:changed', () => {
+events.on('items:changed', () => {
 	page.catalog = appData.catalog.map((item) => {
-		const card = new CatalogItem(cloneTemplate(cardCatalogTemplate), {
+		const card = new Card(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit('card:select', item),
 		});
 		return card.render({
@@ -54,9 +54,9 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 });
 
 // Открыть карточку в модальном окне
-events.on('card:select', (item: ProductItem) => {
+events.on('card:select', (item: IProduct) => {
 	appData.setPreview(item);
-	const card = new CatalogItem(cloneTemplate(cardPreviewTemplate));
+	const card = new Card(cloneTemplate(cardPreviewTemplate));
 	modal.render({
 		content: card.render({
 			title: item.title,
@@ -93,10 +93,14 @@ events.on('card:select', (item: ProductItem) => {
 });
 
 // Изменилось состояние валидации формы
-events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
-	const { email, phone, address, payment } = errors;
-	order.valid = !email && !phone && !address && !payment;
-	order.errors = Object.values({ phone, email, address, payment })
+events.on('formErrors:change', (orderErrors: Partial<IOrderForm>) => {
+	const { payment, address, email, phone } = orderErrors;
+	order.valid = !address && !payment;
+	order.errors = Object.values({ payment, address })
+		.filter((i) => !!i)
+		.join('; ');
+	contacts.valid = !email && !phone;
+	contacts.errors = Object.values({ email, phone })
 		.filter((i) => !!i)
 		.join('; ');
 });
@@ -108,10 +112,15 @@ events.on(
 	}
 );
 
-// Проверка способа оплаты
 events.on(
-	'payment:changed',
-	(data: { field: 'payment'; value: PaymentMethods | null }) => {
+	/^contacts\..*:change/,
+	(data: { field: keyof IOrderForm; value: PaymentMethods }) => {
+		appData.setOrderField(data.field, data.value);
+	}
+);
+
+// Проверка способа оплаты
+events.on('payment:changed', (data: { field: 'payment'; value: PaymentMethods | null }) => {
 		appData.setOrderField(data.field, data.value);
 	}
 );
@@ -137,7 +146,7 @@ events.on('order:open', () => {
 // Подписываемся на событие открытия формы для ввода контактной информации
 events.on('contact:open', () => {
 	modal.render({
-		content: contact.render({
+		content: contacts.render({
 			phone: '',
 			email: '',
 			valid: false,
@@ -148,8 +157,8 @@ events.on('contact:open', () => {
 
 // Отправка заказа
 events.on('payment:submit', () => {
-	const email = contact.getEmail();
-	const phone = contact.getPhone();
+	const email = contacts.getEmail();
+	const phone = contacts.getPhone();
 	const total = basket.updateTotal();
 	const productsId = basket.getItemId();
 
@@ -167,16 +176,17 @@ events.on('payment:submit', () => {
 					onClick: () => {
 						modal.close();
 					},
-				},
-				total
+				}
 			);
-			success.setTotal(total);
+			success.setTotal(total.toString());
 
 			modal.render({
 				content: success.render({}),
 			});
 			basket.clearBasket();
       appData.order.address = '';
+      appData.order.email = '';
+      appData.order.phone = '';
 		})
 		.catch((err) => {
 			console.log(err);

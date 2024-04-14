@@ -1,13 +1,13 @@
 import { Component } from '../base/Component';
 import { cloneTemplate, ensureElement } from '../../utils/utils';
 import { EventEmitter } from '../base/events';
-import { ProductItem } from '../AppData';
+import { IProduct } from '../../types';
 
 interface IBasketView {
 	items: HTMLElement[];
 	total: number;
 	selected: string[];
-	itemsInBasket: ProductItem[];
+	itemsInBasket: IProduct[];
 }
 
 export class Basket extends Component<IBasketView> {
@@ -15,7 +15,7 @@ export class Basket extends Component<IBasketView> {
 	protected _total: HTMLElement;
 	protected _button: HTMLElement;
 	protected _orderButton: HTMLButtonElement;
-	protected itemsInBasket: ProductItem[];
+	protected itemsInBasket: IProduct[];
 	protected _counter: HTMLElement;
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
@@ -44,20 +44,20 @@ export class Basket extends Component<IBasketView> {
 		this.setText(this._total, `${value} синапсов`);
 	}
 
-	addItemToBasket(item: ProductItem) {
+	addItemToBasket(item: IProduct) {
 		this.itemsInBasket.push(item);
 		this.renderBasketItems();
 		this.updateTotal();
 		this.updateCounter();
 	}
 
-	removeItemFromBasket(item: ProductItem) {
+	removeItemFromBasket(item: IProduct) {
 		this.itemsInBasket = this.itemsInBasket.filter((i) => i !== item);
 		this.renderBasketItems();
 		this.updateTotal();
 		this.updateCounter();
 	}
-  
+
 	updateTotal() {
 		let total = 0;
 		this.itemsInBasket.forEach((item) => total += item.price);
@@ -82,7 +82,7 @@ export class Basket extends Component<IBasketView> {
 		});
 	}
 
-	getItemsInBasket(): ProductItem[] {
+	getItemsInBasket(): IProduct[] {
 		if (this.itemsInBasket.length === 0) {
 			this._list.innerHTML = '<p>Корзина пуста</p>';
 			this.setDisabled(this._orderButton, true);

@@ -64,8 +64,7 @@ export class Order extends Form<IOrderForm> {
 	}
 
 	get address(): string {
-		return (this.container.elements.namedItem('address') as HTMLInputElement)
-			.value;
+		return (this.container.elements.namedItem('address') as HTMLInputElement).value;
 	}
 
 	set address(value: string) {

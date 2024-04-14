@@ -6,6 +6,7 @@ export interface IProduct {
 	category: string;
 	price: number;
 	error?: string;
+  button?: HTMLButtonElement;
 }
 
 export enum PaymentMethods {

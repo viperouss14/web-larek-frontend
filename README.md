@@ -140,7 +140,7 @@ interface IBasketView {
 	items: HTMLElement[];
 	total: number;
 	selected: string[];
-	itemsInBasket: ProductItem[];
+	itemsInBasket: IProduct[];
 }
 ```
 
@@ -240,7 +240,7 @@ interface IEvents {
 Доступные методы:\
 `getTotal()` - возвращает итоговую стоимость;\
 `setCatalog(items: IProduct[])` - отвечает за установку каталога продуктов;\
-`setPreview(item: ProductItem)` - устанавливает товар для предпросмотра;\
+`setPreview(item: IProduct)` - устанавливает товар для предпросмотра;\
 `setOrderField(payment: keyof IOrderForm, value: PaymentMethods | null)` - устанавливает значения полей заказа;\
 `getProducts()` - возвращает товары из каталога;\
 `validateOrder()` - отвечает за проверку валидности формы заказа.
@@ -290,8 +290,8 @@ interface IEvents {
 
 Доступные методы:\
 `set total(value: number)` - устанавливает итоговую сумму заказа;\
-`addItemToBasket(item: ProductItem)` - добавляет товар в корзину;\
-`removeItemFromBasket(item: ProductItem)` - удаляет товар из корзины;\
+`addItemToBasket(item: IProduct)` - добавляет товар в корзину;\
+`removeItemFromBasket(item: IProduct)` - удаляет товар из корзины;\
 `updateTotal()` - обновляет итоговую сумму заказа;\
 `renderBasketItems()` - отображает товары в козине;\
 `getItemsInBasket()` - возвращает товары, находящиеся в корзине;\

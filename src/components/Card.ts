@@ -1,5 +1,4 @@
 import { Component } from './base/Component';
-import { IProduct } from '../types/index';
 import { ensureElement } from '../utils/utils';
 import { categoryClassVariables } from '../utils/constants';
 
@@ -98,10 +97,8 @@ export class Card<T> extends Component<ICard<T>> {
 			this.setText(this._description, value);
 		}
 	}
-}
 
-export class CatalogItem extends Card<IProduct> {
-	constructor(container: HTMLElement, actions?: ICardActions) {
-		super(container, actions);
+  disableButton() {
+		this._button.setAttribute('disabled', 'disabled');
 	}
 }

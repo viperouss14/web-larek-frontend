@@ -4,8 +4,6 @@ import { IEvents } from "./base/events";
 import { ensureElement } from "../utils/utils";
 
 export class Contacts extends Form<IOrderForm> {
-    protected _email: string = '';
-    protected _phone: string = '';
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
 
@@ -13,12 +11,10 @@ export class Contacts extends Form<IOrderForm> {
         const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', container);
 
         phoneInput.addEventListener('input', () => {
-            this._phone = phoneInput.value.trim();
             this.checkSubmitButtonState();
         });
 
         emailInput.addEventListener('input', () => {
-            this._email = emailInput.value.trim();
             this.checkSubmitButtonState();
         });
 
@@ -26,31 +22,31 @@ export class Contacts extends Form<IOrderForm> {
         submitButton.addEventListener('click', () => {
             events.emit('payment:submit');
         });
+
+        events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
+          this.updateFormErrors(errors);
+        });
     }
+
+    updateFormErrors(errors: Partial<IOrderForm>) {
+      const formErrors = this.container.querySelector('.form__errors')
+      formErrors.textContent = Object.values(errors).join('; ');
+  }
 
     checkSubmitButtonState() {
-        const phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
-        const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
-        const submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
+      const phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
+      const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
+      const submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
 
-        const phonePattern = /^\+?\d{1,3}?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2}$/;
-        const isPhoneValid = phonePattern.test(phoneInput.value.trim());
+      const isPhoneValid = !!phoneInput.value.trim();
+      const isEmailValid = !!emailInput.value.trim();
 
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isEmailValid = emailPattern.test(emailInput.value.trim());
-        const formErrors = this.container.querySelector('.form__errors')
-
-        if (isPhoneValid && isEmailValid) {
-            formErrors.textContent = ''
-            submitButton.disabled = false;
-        } else if (!isPhoneValid) {
-            formErrors.textContent = 'Введите номер телефона'
-            submitButton.disabled = true;
-        } else if (!isEmailValid) {
-            formErrors.textContent = 'Введите адрес электронной почты'
-            submitButton.disabled = true;
-        }
-    }
+      if (isPhoneValid && isEmailValid) {
+          submitButton.disabled = false;
+      } else {
+          submitButton.disabled = true;
+      }
+  }
 
     set phone(value: string) {
         (this.container.elements.namedItem('phone') as HTMLInputElement).value = value;
@@ -61,11 +57,10 @@ export class Contacts extends Form<IOrderForm> {
     }
 
     getEmail():string{
-        return this._email
-
+        return (this.container.elements.namedItem('email') as HTMLInputElement).value;
     }
-    getPhone():string{
-        return this._phone
 
+    getPhone():string{
+        return (this.container.elements.namedItem('phone') as HTMLInputElement).value;
     }
 }

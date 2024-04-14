@@ -1,23 +1,14 @@
 import { Model } from './base/Model';
 import { FormErrors, IAppState,	IProduct,	IOrder,	IOrderForm, PaymentMethods } from '../types/index';
 
-export type CatalogChangeEvent = {
-	catalog: ProductItem[];
-};
+// export type CatalogChangeEvent = {
+// 	catalog: IProduct[];
+// };
 
-export class ProductItem extends Model<IProduct> {
-	description: string;
-	id: string;
-	image: string;
-	title: string;
-	price: number;
-	category: string;
-	button?: HTMLButtonElement;
-}
 
 export class AppState extends Model<IAppState> {
 	basket: string[];
-	catalog: ProductItem[];
+	catalog: IProduct[];
 	loading: boolean;
 	order: IOrder = {
 		email: '',
@@ -36,11 +27,11 @@ export class AppState extends Model<IAppState> {
 	}
 
 	setCatalog(items: IProduct[]) {
-		this.catalog = items.map((item) => new ProductItem(item, this.events));
+		this.catalog = items;
 		this.emitChanges('items:changed', { catalog: this.catalog });
 	}
 
-	setPreview(item: ProductItem) {
+	setPreview(item: IProduct) {
 		this.preview = item.id;
 		this.emitChanges('preview:changed', item);
 	}
@@ -52,7 +43,7 @@ export class AppState extends Model<IAppState> {
 		}
 	}
 
-	getProducts(): ProductItem[] {
+	getProducts(): IProduct[] {
 		return this.catalog;
 	}
 
@@ -63,6 +54,12 @@ export class AppState extends Model<IAppState> {
     }
     if (!this.order.payment) {
       errors.payment = 'Необходимо выбрать способ оплаты';
+    }
+    if (!this.order.phone) {
+      errors.phone = 'Введите номер телефона';
+    }
+     if (!this.order.email) {
+      errors.email = 'Введите адрес электронной почты';
     }
 		this.formErrors = errors;
 		this.events.emit('formErrors:change', this.formErrors);

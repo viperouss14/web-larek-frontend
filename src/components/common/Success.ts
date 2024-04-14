@@ -11,18 +11,19 @@ interface ISuccessActions {
 
 export class Success extends Component<ISuccess> {
 	protected _close: HTMLElement;
-	protected _total: number;
+	protected _total: HTMLElement;
 
-	constructor(container: HTMLElement, actions: ISuccessActions, total: number) {
+	constructor(container: HTMLElement, actions: ISuccessActions) {
 		super(container);
 		this._close = ensureElement<HTMLElement>('.order-success__close',	this.container);
 		if (actions?.onClick) {
 			this._close.addEventListener('click', actions.onClick);
 		}
+
+    this._total = ensureElement<HTMLElement>('.order-success__description', this.container);
 	}
-	setTotal(total: number) {
-		this._total = total;
-		const orderTotal = ensureElement<HTMLElement>('.order-success__description', this.container);
-		orderTotal.textContent = `Списано ${this._total} синапсов`;
+
+	setTotal(total: string) {
+		this.setText(this._total, `Списано ${total} синапсов`);
 	}
 }
