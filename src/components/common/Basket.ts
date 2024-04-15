@@ -1,3 +1,4 @@
+//basket.ts
 import { Component } from '../base/Component';
 import { cloneTemplate, ensureElement } from '../../utils/utils';
 import { EventEmitter } from '../base/events';
@@ -15,12 +16,10 @@ export class Basket extends Component<IBasketView> {
 	protected _total: HTMLElement;
 	protected _button: HTMLElement;
 	protected _orderButton: HTMLButtonElement;
-	protected itemsInBasket: IProduct[];
 	protected _counter: HTMLElement;
 
 	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
-		this.itemsInBasket = [];
 		this._list = container.querySelector('.basket__list') as HTMLElement;
 		this._total = container.querySelector('.basket__price') as HTMLElement;
 		this._orderButton = container.querySelector('.basket__button') as HTMLButtonElement;
@@ -44,67 +43,50 @@ export class Basket extends Component<IBasketView> {
 		this.setText(this._total, `${value} синапсов`);
 	}
 
-	addItemToBasket(item: IProduct) {
-		this.itemsInBasket.push(item);
-		this.renderBasketItems();
-		this.updateTotal();
-		this.updateCounter();
-	}
-
-	removeItemFromBasket(item: IProduct) {
-		this.itemsInBasket = this.itemsInBasket.filter((i) => i !== item);
-		this.renderBasketItems();
-		this.updateTotal();
-		this.updateCounter();
-	}
-
-	updateTotal() {
-		let total = 0;
-		this.itemsInBasket.forEach((item) => total += item.price);
-		this.getItemsInBasket();
-		return (this.total = total);
-	}
-
-	renderBasketItems() {
+	renderBasketItems(itemsInBasket: IProduct[]) {
 		let counter = 1;
 		this._list.innerHTML = '';
-		this.itemsInBasket.forEach((item) => {
-      const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+		itemsInBasket.forEach((item) => {
+			const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 			const newItemInBasket = cloneTemplate(cardBasketTemplate);
-      newItemInBasket.querySelector('.basket__item-index').textContent = `${counter}`;
-      newItemInBasket.querySelector('.card__title').textContent = item.title;
-      newItemInBasket.querySelector('.card__price').textContent = `${item.price} синапсов`;
-      newItemInBasket.querySelector('.basket__item-delete').addEventListener('click', () => {
-        this.removeItemFromBasket(item);
-      });
-      this._list.appendChild(newItemInBasket);
-      counter += 1;
+			newItemInBasket.querySelector('.basket__item-index').textContent = `${counter}`;
+			newItemInBasket.querySelector('.card__title').textContent = item.title;
+			newItemInBasket.querySelector('.card__price').textContent = `${item.price} синапсов`;
+			newItemInBasket.querySelector('.basket__item-delete').addEventListener('click', () => {
+				this.events.emit('basket:itemRemoved', item);
+			});
+			this._list.appendChild(newItemInBasket);
+			counter += 1;
 		});
 	}
 
-	getItemsInBasket(): IProduct[] {
-		if (this.itemsInBasket.length === 0) {
-			this._list.innerHTML = '<p>Корзина пуста</p>';
-			this.setDisabled(this._orderButton, true);
+	updateCounter(itemsInBasket: IProduct[]) {
+		this._counter.textContent = itemsInBasket.length.toString();
+	}
+
+  setBasketMessage(message: string) {
+		this._list.innerHTML = message;
+	}
+
+	setOrderButtonDisabled(disabled: boolean) {
+		this.setDisabled(this._orderButton, disabled);
+	}
+
+	set items(items: HTMLElement[]) {
+		if (items.length) {
+			this._list.replaceChildren(...items);
 		} else {
-			this.setDisabled(this._orderButton, false);
+			this._list.replaceChildren(
+				document.createElement('p').textContent = 'Корзина пуста'
+			);
 		}
-
-		return this.itemsInBasket;
 	}
 
-	getItemId() {
-		return this.itemsInBasket.map((item) => item.id);
-	}
-
-	clearBasket() {
-		this.itemsInBasket = [];
-		this.renderBasketItems();
-		this.updateTotal();
-		this.updateCounter();
-	}
-
-	private updateCounter() {
-		this._counter.textContent = this.itemsInBasket.length.toString();
+	set selected(items: IProduct[]) {
+		if (items.length) {
+			this.setDisabled(this._orderButton, false);
+		} else {
+			this.setDisabled(this._orderButton, true);
+		}
 	}
 }

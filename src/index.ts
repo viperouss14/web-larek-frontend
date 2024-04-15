@@ -50,21 +50,22 @@ events.on('items:changed', () => {
 			category: item.category,
 		});
 	});
-	page.counter = basket.getItemsInBasket().length;
+	page.counter = appData.getItemId().length;
 });
 
 // Открыть карточку в модальном окне
 events.on('card:select', (item: IProduct) => {
 	appData.setPreview(item);
 	const productId = item.id;
-	const basketItems = basket.getItemsInBasket();
-	const isItemInBasket = basketItems.some((item) => item.id === productId);
+	const basketItems = appData.getItemId();
+	const isItemInBasket = basketItems.includes(productId);
 	const card = new Card(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => {
 			if (!isItemInBasket) {
-				basket.addItemToBasket(item);
-				modal.close();
-				page.counter = basket.getItemsInBasket().length;
+        appData.addItemToBasket(item);
+        events.emit('basket:updated');
+        modal.close();
+        page.counter = appData.getItemId().length;
 			}
 		},
 	}, isItemInBasket);
@@ -81,6 +82,27 @@ events.on('card:select', (item: IProduct) => {
 			category: item.category,
 		}),
 	});
+});
+
+// Подписка на событие обновления корзины
+events.on('basket:updated', () => {
+	const itemsInBasket = appData.getItemsInBasket();
+	basket.renderBasketItems(itemsInBasket);
+	if (itemsInBasket.length === 0) {
+		basket.setBasketMessage('<p>Корзина пуста</p>');
+		basket.setOrderButtonDisabled(true);
+	} else {
+		basket.setOrderButtonDisabled(false);
+	}
+  const total = appData.getTotal();
+	basket.total = total;
+});
+
+// Удаление элемента из корзины
+events.on('basket:itemRemoved', (item: IProduct) => {
+	appData.removeItemFromBasket(item.id);
+	events.emit('basket:updated');
+	page.counter = appData.getItemId().length;
 });
 
 // Изменилось состояние валидации формы
@@ -148,11 +170,10 @@ events.on('contact:open', () => {
 
 // Отправка заказа
 events.on('payment:submit', () => {
-	const total = basket.updateTotal();
-	const productsId = basket.getItemId();
+	const productsId = appData.getItemId();
 
 	appData.setOrderItems(productsId);
-	appData.setOrderTotal(total);
+	const total = appData.getTotal();
 
 	api
 		.orderProduct(appData.order)
@@ -170,8 +191,9 @@ events.on('payment:submit', () => {
 			modal.render({
 				content: success.render({}),
 			});
-			basket.clearBasket();
+			appData.clearBasket();
 			appData.clearOrder();
+      page.counter = appData.getItemId().length;
 		})
 		.catch((err) => {
 			console.log(err);
