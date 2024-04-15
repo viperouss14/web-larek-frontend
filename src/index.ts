@@ -68,7 +68,7 @@ events.on('card:select', (item: IProduct) => {
 			}
 		},
 	}, isItemInBasket);
-  
+
   if (item.price === null) card.disableButton();
 
   modal.render({
@@ -148,15 +148,11 @@ events.on('contact:open', () => {
 
 // Отправка заказа
 events.on('payment:submit', () => {
-	const email = contacts.getEmail();
-	const phone = contacts.getPhone();
 	const total = basket.updateTotal();
 	const productsId = basket.getItemId();
 
-	appData.order.email = email;
-	appData.order.phone = phone;
-	appData.order.total = total;
-	appData.order.items = productsId;
+	appData.setOrderItems(productsId);
+	appData.setOrderTotal(total);
 
 	api
 		.orderProduct(appData.order)
@@ -175,9 +171,7 @@ events.on('payment:submit', () => {
 				content: success.render({}),
 			});
 			basket.clearBasket();
-      appData.order.address = '';
-      appData.order.email = '';
-      appData.order.phone = '';
+			appData.clearOrder();
 		})
 		.catch((err) => {
 			console.log(err);

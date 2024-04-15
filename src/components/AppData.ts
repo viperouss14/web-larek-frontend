@@ -43,6 +43,31 @@ export class AppState extends Model<IAppState> {
 		}
 	}
 
+  setOrderItems(items: string[]) {
+		this.order.items = items;
+		if (this.validateOrder()) {
+			this.events.emit('order:ready', this.order);
+		}
+	}
+
+	setOrderTotal(total: number) {
+		this.order.total = total;
+		if (this.validateOrder()) {
+			this.events.emit('order:ready', this.order);
+		}
+	}
+
+  clearOrder() {
+		this.order = {
+			email: '',
+			phone: '',
+			address: '',
+			items: [],
+			total: null,
+			payment: null,
+		};
+	}
+
 	getProducts(): IProduct[] {
 		return this.catalog;
 	}
