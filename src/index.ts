@@ -143,6 +143,7 @@ events.on('basket:open', () => {
 	modal.render({
 		content: basket.render(),
 	});
+  events.emit('basket:updated'); 
 });
 
 // Открыть форму заказа
@@ -192,7 +193,7 @@ events.on('payment:submit', () => {
 				content: success.render({}),
 			});
 			appData.clearBasket();
-			appData.clearOrder();
+			events.emit('basket:updated');
       page.counter = appData.getItemId().length;
       order.resetPaymentMethod();
 		})
