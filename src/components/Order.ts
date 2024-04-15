@@ -70,4 +70,9 @@ export class Order extends Form<IOrderForm> {
 	set address(value: string) {
 		(this.container.elements.namedItem('address') as HTMLInputElement).value = value;
 	}
+
+  resetPaymentMethod() {
+    this._payment = null;
+    this.updatePaymentButtons();
+  }
 }

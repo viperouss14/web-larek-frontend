@@ -1,6 +1,5 @@
-//basket.ts
 import { Component } from '../base/Component';
-import { cloneTemplate, ensureElement } from '../../utils/utils';
+import { cloneTemplate, createElement, ensureElement } from '../../utils/utils';
 import { EventEmitter } from '../base/events';
 import { IProduct } from '../../types';
 
@@ -77,16 +76,10 @@ export class Basket extends Component<IBasketView> {
 			this._list.replaceChildren(...items);
 		} else {
 			this._list.replaceChildren(
-				document.createElement('p').textContent = 'Корзина пуста'
+				createElement<HTMLParagraphElement>('p', {
+					textContent: 'Корзина пуста',
+				})
 			);
-		}
-	}
-
-	set selected(items: IProduct[]) {
-		if (items.length) {
-			this.setDisabled(this._orderButton, false);
-		} else {
-			this.setDisabled(this._orderButton, true);
 		}
 	}
 }

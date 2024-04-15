@@ -194,6 +194,7 @@ events.on('payment:submit', () => {
 			appData.clearBasket();
 			appData.clearOrder();
       page.counter = appData.getItemId().length;
+      order.resetPaymentMethod();
 		})
 		.catch((err) => {
 			console.log(err);
