@@ -45,13 +45,6 @@ export class AppState extends Model<IAppState> {
 		}
 	}
 
-	setOrderTotal(total: number) {
-		this.order.total = total;
-		if (this.validateOrder()) {
-			this.events.emit('order:ready', this.order);
-		}
-	}
-
   clearOrder() {
 		this.order = {
 			email: '',
