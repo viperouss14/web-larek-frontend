@@ -56,8 +56,22 @@ events.on('items:changed', () => {
 // Открыть карточку в модальном окне
 events.on('card:select', (item: IProduct) => {
 	appData.setPreview(item);
-	const card = new Card(cloneTemplate(cardPreviewTemplate));
-	modal.render({
+	const productId = item.id;
+	const basketItems = basket.getItemsInBasket();
+	const isItemInBasket = basketItems.some((item) => item.id === productId);
+	const card = new Card(cloneTemplate(cardPreviewTemplate), {
+		onClick: () => {
+			if (!isItemInBasket) {
+				basket.addItemToBasket(item);
+				modal.close();
+				page.counter = basket.getItemsInBasket().length;
+			}
+		},
+	}, isItemInBasket);
+  
+  if (item.price === null) card.disableButton();
+
+  modal.render({
 		content: card.render({
 			title: item.title,
 			description: item.description,
@@ -66,29 +80,6 @@ events.on('card:select', (item: IProduct) => {
 			button: item.button,
 			category: item.category,
 		}),
-	});
-
-	const modalContainer = document.querySelector('#modal-container');
-	const addToBasketButton = modalContainer.querySelector('.card .card__button') as HTMLButtonElement;
-
-  const productId = item.id;
-	const basketItems = basket.getItemsInBasket();
-	const isItemInBasket = basketItems.some((item) => item.id === productId);
-	if (isItemInBasket) {
-		addToBasketButton.disabled = true;
-		addToBasketButton.classList.add('disabled');
-		addToBasketButton.textContent = 'Товар уже в корзине';
-	} else if (item.price === null) {
-		addToBasketButton.disabled = true;
-		addToBasketButton.classList.add('disabled');
-	}
-
-	addToBasketButton.addEventListener('click', () => {
-		if (!isItemInBasket) {
-			basket.addItemToBasket(item);
-			modal.close();
-			page.counter = basket.getItemsInBasket().length;
-		}
 	});
 });
 

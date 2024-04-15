@@ -23,7 +23,7 @@ export class Card<T> extends Component<ICard<T>> {
 	protected _category: HTMLElement;
 	protected _price: HTMLElement;
 
-	constructor(container: HTMLElement, actions?: ICardActions) {
+	constructor(container: HTMLElement, actions?: ICardActions, itemInBasket?: boolean) {
 		super(container);
 
 		this._title = ensureElement<HTMLElement>('.card__title', container);
@@ -33,13 +33,19 @@ export class Card<T> extends Component<ICard<T>> {
 		this._category = ensureElement<HTMLElement>('.card__category', container);
 		this._price = ensureElement<HTMLElement>('.card__price', container);
 
-		if (actions?.onClick) {
-			if (this._button) {
-				this._button.addEventListener('click', actions.onClick);
-			} else {
-				container.addEventListener('click', actions.onClick);
-			}
-		}
+    if (actions?.onClick) {
+      if (this._button) {
+        if (itemInBasket) {
+          this._button.disabled = true;
+          this._button.classList.add('disabled');
+          this._button.textContent = 'Товар уже в корзине';
+        } else {
+          this._button.addEventListener('click', actions.onClick);
+        }
+      } else {
+        container.addEventListener('click', actions.onClick);
+      }
+    }
 	}
 
 	set id(value: string) {
@@ -60,7 +66,7 @@ export class Card<T> extends Component<ICard<T>> {
 
 	set category(value: string) {
 		this.setText(this._category, value);
-    this._category.className = `card__category ${categoryClassVariables[value]}`;
+		this._category.className = `card__category ${categoryClassVariables[value]}`;
 	}
 
 	get category(): string {
@@ -72,7 +78,7 @@ export class Card<T> extends Component<ICard<T>> {
 			this.setText(this._price,'Бесценно')
 		}
 		else{
-		this.setText(this._price, `${value} синапсов`,)
+			this.setText(this._price, `${value} синапсов`,)
 		};
 	}
 
