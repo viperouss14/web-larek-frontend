@@ -79,46 +79,5 @@ export class AppState extends Model<IAppState> {
 		return Object.keys(errors).length === 0;
 	}
 
-	addItemToBasket(item: IProduct) {
-		this.basket.push(item.id);
-		this.order.items = this.basket;
-		this.order.total = this.getTotal();
-		if (this.validateOrder()) {
-			this.events.emit('order:ready', this.order);
-		}
-	}
 
-  removeItemFromBasket(itemId: string) {
-    this.basket = this.basket.filter((i) => i !== itemId);
-    this.order.items = this.basket;
-    this.order.total = this.getTotal();
-    if (this.validateOrder()) {
-      this.events.emit('order:ready', this.order);
-    }
-  }
-
-	updateTotal() {
-		let total = 0;
-		this.order.items.forEach((itemId) => {
-			const item = this.catalog.find((item) => item.id === itemId);
-			if (item) {
-				total += item.price;
-			}
-		});
-		this.order.total = total;
-	}
-
-	clearBasket() {
-		this.basket = [];
-		this.order.items = [];
-		this.order.total = null;
-	}
-
-	getItemId() {
-		return this.order.items;
-	}
-
-  getItemsInBasket(): IProduct[] {
-		return this.basket.map((itemId) => this.catalog.find((item) => item.id === itemId));
-	}
 }
