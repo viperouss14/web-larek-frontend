@@ -158,7 +158,7 @@ events.on('order:open', () => {
 });
 
 // Подписываемся на событие открытия формы для ввода контактной информации
-events.on('contact:open', () => {
+events.on('contacts:open', () => {
 	modal.render({
 		content: contacts.render({
 			phone: '',

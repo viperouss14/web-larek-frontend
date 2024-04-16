@@ -4,22 +4,26 @@ import { IEvents } from "./base/events";
 import { ensureElement } from "../utils/utils";
 
 export class Contacts extends Form<IOrderForm> {
+    protected _phoneInput: HTMLInputElement;
+    protected _emailInput: HTMLInputElement;
+    protected _submitButton: HTMLButtonElement;
+
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
 
-        const phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', container);
-        const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', container);
+        this._phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', container);
+        this._emailInput = ensureElement<HTMLInputElement>('input[name="email"]', container);
+        this._submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', container);
 
-        phoneInput.addEventListener('input', () => {
+        this._phoneInput.addEventListener('input', () => {
             this.checkSubmitButtonState();
         });
 
-        emailInput.addEventListener('input', () => {
+        this._emailInput.addEventListener('input', () => {
             this.checkSubmitButtonState();
         });
 
-        const submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', container);
-        submitButton.addEventListener('click', () => {
+        this._submitButton.addEventListener('click', () => {
             events.emit('payment:submit');
         });
 
@@ -34,33 +38,29 @@ export class Contacts extends Form<IOrderForm> {
   }
 
     checkSubmitButtonState() {
-      const phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
-      const emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
-      const submitButton = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
-
-      const isPhoneValid = !!phoneInput.value.trim();
-      const isEmailValid = !!emailInput.value.trim();
+      const isPhoneValid = !!this._phoneInput.value.trim();
+      const isEmailValid = !!this._emailInput.value.trim();
 
       if (isPhoneValid && isEmailValid) {
-          submitButton.disabled = false;
+          this._submitButton.disabled = false;
       } else {
-          submitButton.disabled = true;
+          this._submitButton.disabled = true;
       }
   }
 
     set phone(value: string) {
-        (this.container.elements.namedItem('phone') as HTMLInputElement).value = value;
+        this._phoneInput.value = value;
     }
 
     set email(value: string) {
-        (this.container.elements.namedItem('email') as HTMLInputElement).value = value;
-    }
-
-    getEmail():string{
-        return (this.container.elements.namedItem('email') as HTMLInputElement).value;
+        this._emailInput.value = value;
     }
 
     getPhone():string{
-        return (this.container.elements.namedItem('phone') as HTMLInputElement).value;
+        return this._phoneInput.value;
+    }
+
+    getEmail():string{
+        return this._emailInput.value;
     }
 }

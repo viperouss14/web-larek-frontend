@@ -5,52 +5,54 @@ import { ensureElement } from '../utils/utils';
 
 export class Order extends Form<IOrderForm> {
 	protected _payment: PaymentMethods | null;
+  protected _onlinePayButton: HTMLButtonElement;
+  protected _offlinePayButton: HTMLButtonElement;
+  protected _orderButton: HTMLButtonElement;
+  protected _addressInput: HTMLInputElement;
 
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		const onlineBuyButton = ensureElement<HTMLButtonElement>('button[name="card"]',	this.container);
-		if (onlineBuyButton) {
-			onlineBuyButton.addEventListener('click', () => {
+		this._onlinePayButton = ensureElement<HTMLButtonElement>('button[name="card"]',	this.container);
+    this._offlinePayButton = ensureElement<HTMLButtonElement>('button[name="cash"]', this.container);
+    this._orderButton = ensureElement<HTMLButtonElement>('.order__button', this.container);
+    this._addressInput = ensureElement<HTMLInputElement>('input[name="address"]',	this.container);
+
+		if (this._onlinePayButton) {
+			this._onlinePayButton.addEventListener('click', () => {
 				this.payment = PaymentMethods.Online;
 				this.updatePaymentButtons();
 			});
 		}
 
-		const offlineBuyButton = ensureElement<HTMLButtonElement>('button[name="cash"]', this.container);
-		if (offlineBuyButton) {
-			offlineBuyButton.addEventListener('click', () => {
+		if (this._offlinePayButton) {
+			this._offlinePayButton.addEventListener('click', () => {
 				this.payment = PaymentMethods.Offline;
 				this.updatePaymentButtons();
 			});
 		}
 
-		const orderButton = ensureElement<HTMLButtonElement>('.order__button', this.container);
-		if (orderButton) {
-			orderButton.addEventListener('click', () => {
+		if (this._orderButton) {
+			this._orderButton.addEventListener('click', () => {
 				this.handleOrderButtonClick();
 			});
 		}
 	}
 
 	updatePaymentButtons() {
-		const onlineButton = ensureElement<HTMLButtonElement>('button[name="card"]',	this.container);
-		const cashButton = ensureElement<HTMLButtonElement>('button[name="cash"]', this.container);
-
-		onlineButton?.classList.remove('button_alt-active');
-		cashButton?.classList.remove('button_alt-active');
+		this._onlinePayButton?.classList.remove('button_alt-active');
+		this._offlinePayButton?.classList.remove('button_alt-active');
 
 		if (this._payment === 'card') {
-			onlineButton?.classList.add('button_alt-active');
+			this._onlinePayButton?.classList.add('button_alt-active');
 		} else if (this._payment === 'cash') {
-			cashButton?.classList.add('button_alt-active');
+			this._offlinePayButton?.classList.add('button_alt-active');
 		}
 	}
 
 	handleOrderButtonClick() {
-		const addressInput = ensureElement<HTMLInputElement>('input[name="address"]',	this.container);
-		if (addressInput && this._payment) {
-			this.events.emit('contact:open');
+		if (this._addressInput && this._payment) {
+			this.events.emit('contacts:open');
 		}
 	}
 
@@ -64,11 +66,11 @@ export class Order extends Form<IOrderForm> {
 	}
 
 	get address(): string {
-		return (this.container.elements.namedItem('address') as HTMLInputElement).value;
+		return this._addressInput.value;
 	}
 
 	set address(value: string) {
-		(this.container.elements.namedItem('address') as HTMLInputElement).value = value;
+		this._addressInput.value = value;
 	}
 
   resetPaymentMethod() {
