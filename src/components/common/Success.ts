@@ -1,5 +1,5 @@
 import { Component } from '../base/Component';
-import { ensureElement } from '../../utils/utils';
+import { ensureElement, formatNumber } from '../../utils/utils';
 
 interface ISuccess {
 	total: number;
@@ -23,7 +23,7 @@ export class Success extends Component<ISuccess> {
     this._total = ensureElement<HTMLElement>('.order-success__description', this.container);
 	}
 
-	setTotal(total: string) {
-		this.setText(this._total, `Списано ${total} синапсов`);
+	setTotal(total: number) {
+		this.setText(this._total, `Списано ${formatNumber(total)} синапсов`);
 	}
 }

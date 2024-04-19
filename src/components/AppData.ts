@@ -1,8 +1,9 @@
 import { Model } from './base/Model';
 import { FormErrors, IAppState,	IProduct,	IOrder,	IOrderForm, PaymentMethods } from '../types/index';
+import { removeItem } from '../utils/utils';
 
 export class AppState extends Model<IAppState> {
-	basket: string[] = [];
+	basket: IProduct[] = [];
 	catalog: IProduct[];
 	loading: boolean;
 	order: IOrder = {
@@ -13,13 +14,9 @@ export class AppState extends Model<IAppState> {
 		total: null,
 		payment: null,
 	};
+
 	preview: string | null;
 	formErrors: FormErrors = {};
-
-	getTotal() {
-		return this.order.items.reduce(
-			(a, b) => a + this.catalog.find((item) => item.id === b).price,	0);
-	}
 
 	setCatalog(items: IProduct[]) {
 		this.catalog = items;
@@ -45,17 +42,6 @@ export class AppState extends Model<IAppState> {
 		}
 	}
 
-  clearOrder() {
-		this.order = {
-			email: '',
-			phone: '',
-			address: '',
-			items: [],
-			total: null,
-			payment: null,
-		};
-	}
-
 	getProducts(): IProduct[] {
 		return this.catalog;
 	}
@@ -79,5 +65,33 @@ export class AppState extends Model<IAppState> {
 		return Object.keys(errors).length === 0;
 	}
 
+  addToBasket(item: IProduct) {
+    if(item.price) {
+      this.basket.push(item);
+      this.emitChanges('basket-count:change', this.basket);
+      this.emitChanges('basket:change', this.basket);
+    }
+  }
 
+  deleteFromBasket(item: IProduct) {
+    removeItem(this.basket, item);
+    this.emitChanges('basket-count:change', this.basket);
+    this.emitChanges('basket:change', this.basket);
+  }
+
+  clearBasket() {
+    this.basket = [];
+    this.emitChanges('basket-count:change', this.basket);
+    this.emitChanges('basket:change', this.basket);
+  }
+
+  setItem(item: IProduct) {
+    if(item.price) {
+      this.order.items.push(item.id);
+    }
+  }
+
+  removeItem(item: string) {
+    removeItem(this.order.items, item);
+  }
 }

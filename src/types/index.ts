@@ -5,8 +5,6 @@ export interface IProduct {
 	title: string;
 	category: string;
 	price: number;
-	error?: string;
-  button?: HTMLButtonElement;
 }
 
 export enum PaymentMethods {
@@ -34,8 +32,8 @@ export interface IOrderResult {
 export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
 export interface IAppState {
-	catalog: IProduct;
-	basket: string[];
+	catalog: IProduct[];
+	basket: IProduct[];
 	preview: string | null;
 	order: IOrder | null;
 }

@@ -102,6 +102,10 @@ export function isBoolean(v: unknown): v is boolean {
     return typeof v === 'boolean';
 }
 
+export function formatNumber(x: number, sep = ' ') {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+}
+
 /**
  * Фабрика DOM-элементов в простейшей реализации
  * здесь не учтено много факторов
@@ -132,4 +136,13 @@ export function createElement<
         }
     }
     return element;
+}
+
+// Удаление конкретного элемента из массива
+export function removeItem<T>(arr: Array<T>, value: T): Array<T> {
+	const index = arr.indexOf(value);
+	if (index > -1) {
+		arr.splice(index, 1);
+	}
+	return arr;
 }
